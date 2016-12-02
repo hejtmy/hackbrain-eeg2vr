@@ -26,7 +26,6 @@ public class ColorifyCube : MonoBehaviour {
         float emission = Mathf.PingPong(Time.time, 1.0f);
         _color = _mat.color * Mathf.LinearToGammaSpace(emission);
         _mat.SetColor("_EmissionColor", _color);
-
     }
 
     #region Public API
