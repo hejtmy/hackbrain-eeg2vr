@@ -46,6 +46,11 @@ public class _brain_Core : MonoBehaviour {
         }
     }
 
+    protected IEnumerator Resizing(float targetScale, float duration)
+    {
+        yield return null;
+    }
+
     protected IEnumerator Moving(Vector3 where, float duration)
     {
         var startPos = gameObject.transform.position;

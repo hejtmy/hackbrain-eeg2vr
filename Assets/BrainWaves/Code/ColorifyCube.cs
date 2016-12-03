@@ -17,7 +17,7 @@ public class ColorifyCube : MonoBehaviour {
     void OnTriggerEnter(Collider col)
     {
         if (col.tag != "Brain") return;
-        BrainWave brainWave = col.gameObject.GetComponent<BrainWave>();
+        _brain_Pulse brainWave = col.gameObject.GetComponent<_brain_Pulse>();
         ChangeColour(brainWave.Color);
     }
 
