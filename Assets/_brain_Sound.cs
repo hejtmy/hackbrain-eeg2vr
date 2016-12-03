@@ -16,4 +16,19 @@ public class _brain_Sound : MonoBehaviour {
 	void Update () {
 	
 	}
+
+    public void PlayTick()
+    {
+
+    }
+
+    public void PlayBass()
+    {
+
+    }
+
+    public void PlayChoir()
+    {
+
+    }
 }
