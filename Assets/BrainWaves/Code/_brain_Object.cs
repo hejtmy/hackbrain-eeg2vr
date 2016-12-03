@@ -2,10 +2,8 @@
 using System.Collections;
 using System;
 
-public class _brain_Object : MonoBehaviour {
+public class _brain_Object : _brain_Core {
 
-    IEnumerator rotation;
-    IEnumerator movement;
 
     float Y_axis;
 
@@ -26,12 +24,7 @@ public class _brain_Object : MonoBehaviour {
     #region Public API
     #region Moving
 
-    public void MoveTo(Vector3 where, float duration)
-    {
-        if (movement != null) StopCoroutine(movement);
-        movement = Moving(where, duration);
-        StartCoroutine(movement);
-    }
+
     public void Disappear(float duration)
     {
         var curPos = gameObject.transform.position;
@@ -46,16 +39,6 @@ public class _brain_Object : MonoBehaviour {
         MoveTo(where, duration);
     }
 
-    public void Rotate(Vector3 angle, float speed)
-    {
-        rotation = Rotating(angle, speed);
-        StartCoroutine(rotation);
-    }
-
-    public void StopRotating()
-    {
-        StopCoroutine(rotation);
-    }
     #endregion
     #region transformations
     public void Resize(float newScale = 1)
@@ -105,28 +88,6 @@ public class _brain_Object : MonoBehaviour {
             float emission = Mathf.PingPong(Time.time, 1);
             var color = _mat.color * Mathf.LinearToGammaSpace(emission);
             _mat.SetColor("_EmissionColor", color);
-            yield return null;
-        }
-    }
-
-    IEnumerator Rotating(Vector3 angle, float speed)
-    {
-        while (true) {
-            gameObject.transform.Rotate(angle * Time.deltaTime * speed);
-            yield return null;
-        }
-    }
-
-    IEnumerator Moving(Vector3 where, float duration)
-    {
-        var startPos = gameObject.transform.position;
-        var elapsedTime = 0f;
-        var startTime = Time.realtimeSinceStartup;
-        while (elapsedTime < duration)
-        {
-            elapsedTime = Time.realtimeSinceStartup - startTime;
-            // TODO - needs to finish actually
-            gameObject.transform.position = Vector3.Lerp(startPos, where, elapsedTime/duration);
             yield return null;
         }
     }

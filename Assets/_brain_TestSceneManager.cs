@@ -6,6 +6,8 @@ public class _brain_TestSceneManager : MonoBehaviour {
 
     public _brain_Object Object1;
 
+    public _brain_DirLight Light1;
+
     bool _colour_done = false;
 
 	// Use this for initialization
@@ -31,6 +33,9 @@ public class _brain_TestSceneManager : MonoBehaviour {
         if (Input.GetKeyDown("m")) Object1.Disappear(3);
         
         if (Input.GetKeyDown("j")) Object1.Appear(3);
-        
+
+        if (Input.GetKeyDown("l")) Light1.ChangeColor(Color.green, 3);
+
+        if (Input.GetKeyDown("p")) Light1.Rotate(Vector3.right, 50);
     }
 }
