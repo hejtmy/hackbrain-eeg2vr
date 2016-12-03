@@ -42,30 +42,30 @@ namespace oscReceiver
                     // failed
                     throw new ArgumentException("Expected double got: " + currentArgument.GetType().ToString());
                 }
-
+                // Console.WriteLine("callback function called. currentAddress: " + currentAddress + ", currentDoubleArgument: " + currentDoubleArgument);
                 switch (currentAddress)
                 {
-                    case "up":
+                    case "/up":
                         if (ActiveFocusUpEvent != null)
                             ActiveFocusUpEvent(currentDoubleArgument);
                         break;
-                    case "down":
+                    case "/down":
                         if (ActiveFocusDownEvent != null)
                             ActiveFocusDownEvent(currentDoubleArgument);
                         break;
-                    case "weightedAlphaSum": // excitement
+                    case "/alfa": // excitement weightedAlphaSum
                         if (BrainExcitementLevelEvent != null)
                             BrainExcitementLevelEvent(currentDoubleArgument);
                         break;
-                    case "frontalAlfaAsymetry": // positive reaction
+                    case "/frontalAlfaAsymetry": // positive reaction
                         if (AffectionLevelEvent != null)
                             AffectionLevelEvent(currentDoubleArgument);
                         break;
-                    case "verbalCenterExcitement":
+                    case "/verbalCenterExcitement":
                         if (VerbalExcitementLevelEvent != null)
                             VerbalExcitementLevelEvent(currentDoubleArgument);
                         break;
-                    case "visualCenterExcitement":
+                    case "/visualCenterExcitement":
                         if (VisualExcitementLevelEvent != null)
                             VisualExcitementLevelEvent(currentDoubleArgument);
                         break;
