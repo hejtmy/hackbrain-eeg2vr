@@ -1,4 +1,6 @@
-﻿using oscReceiver;
+﻿#define DEBUG
+
+using oscReceiver;
 using UnityEngine;
 
 public class _brain_Listener : MonoBehaviour {
@@ -31,8 +33,9 @@ public class _brain_Listener : MonoBehaviour {
         Debug.Log("brain excited called:" + eventData);
     }
 
-    // Update is called once per frame
-    void Update () {
-	
-	}
+    public bool IsListening()
+    {
+        return false;
+        //else return true;
+    }
 }
