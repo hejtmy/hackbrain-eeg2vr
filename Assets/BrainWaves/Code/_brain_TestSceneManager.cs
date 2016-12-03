@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
-using oscReceiver;
+using System;
 
 public class _brain_TestSceneManager : MonoBehaviour {
 
@@ -18,20 +18,28 @@ public class _brain_TestSceneManager : MonoBehaviour {
 
     public GameObject player;
 
+    public _brain_Listener listener;
+
     Vector2 centerPosition;
-	// Use this for initialization
-	void Start () {
+
+    bool _rotating = false;
+
+    // Use this for initialization
+    void Start () {
         centerPosition = new Vector2(Screen.width / 2, Screen.height / 2);
-        EegOscReceiver receiver = new EegOscReceiver(55056);
-        EegOscReceiver.ActiveFocusUpEvent += DoSth;
+        listener.AlfaChanged += AlfaChanged;
+    }
+
+    private void AlfaChanged(double value)
+    {
+        if (value > 10) _rotating = true;
+        else _rotating = false;
     }
 
     // Update is called once per frame
     void Update () {
 
         if (Input.GetKeyDown("r")) Object1.Rotate(new Vector3(0, 1, 0), 100);
-
-
         if (Input.GetKeyDown("t"))
         {
             if (_colour_done) Object1.SwitchColours(Color.green, Color.yellow, 2);
@@ -40,11 +48,8 @@ public class _brain_TestSceneManager : MonoBehaviour {
         }
 
         if (Input.GetKeyDown("o")) Object1.PulseColour(5, 5);
-
         if (Input.GetKeyDown("m")) Object1.Disappear(3);
-        
         if (Input.GetKeyDown("j")) Object1.Appear(3);
-
         if (Input.GetKeyDown("l"))
         {
             AlchemyRotSpeed += 10;
@@ -57,10 +62,11 @@ public class _brain_TestSceneManager : MonoBehaviour {
 
         }
         if (Input.GetKeyDown("p")) Light1.Rotate(new Vector3(0, 1, 0), 50);
-
         if (Input.GetKeyDown("t")) Anim1.SetBool("doDope", true);
-
         Raycasing();
+
+        if (_rotating) Object1.Rotate(new Vector3(0, 1, 0), 10);
+        else Object1.StopRotating();
     }
 
     void Raycasing()
@@ -69,10 +75,8 @@ public class _brain_TestSceneManager : MonoBehaviour {
         RaycastHit hit;
         if (Physics.Raycast(ray, out hit))
         {
-            Debug.Log(hit.collider.gameObject.name);
             if(hit.collider.tag == "BrainObject")
             {
-                Debug.Log("This is dope");
                 Object1 = hit.collider.gameObject.GetComponent<_brain_Object>();
             }
             // Do something with the object that was hit by the raycast.

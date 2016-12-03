@@ -6,6 +6,8 @@ public class _brain_Core : MonoBehaviour {
     IEnumerator rotation;
     IEnumerator movement;
 
+    public float Speed;
+
     // Use this for initialization
     void Start () {
 	
@@ -19,13 +21,14 @@ public class _brain_Core : MonoBehaviour {
     #region Public API
     public void Rotate(Vector3 angle, float speed)
     {
+        StopRotating();
         rotation = Rotating(angle, speed);
         StartCoroutine(rotation);
     }
 
     public void StopRotating()
     {
-        StopCoroutine(rotation);
+        if(rotation != null) StopCoroutine(rotation);
     }
 
     public void MoveTo(Vector3 where, float duration)
@@ -60,6 +63,7 @@ public class _brain_Core : MonoBehaviour {
         {
             elapsedTime = Time.realtimeSinceStartup - startTime;
             // TODO - needs to finish actually
+             
             gameObject.transform.position = Vector3.Lerp(startPos, where, elapsedTime / duration);
             yield return null;
         }

@@ -4,7 +4,6 @@ using System;
 
 public class _brain_Object : _brain_Core {
 
-
     float Y_axis;
 
     Material _mat;
@@ -13,12 +12,6 @@ public class _brain_Object : _brain_Core {
     {
         _mat = gameObject.GetComponentInChildren<Renderer>().material;
         Y_axis = gameObject.transform.position.y;
-	}
-	
-	// Update is called once per frame
-	void Update ()
-    {
-	
 	}
 
     #region Public API
