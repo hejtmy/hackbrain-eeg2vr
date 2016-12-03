@@ -15,16 +15,22 @@ public class _brain_TestSceneManager : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
+
+        if (Input.GetKeyDown("r")) Object1.Rotate(new Vector3(0, 1, 0), 100);
+
 	    if (Input.GetKeyDown("k"))
         {
-            Object1.Rotate(2, 10);
+            
             if (_colour_done) Object1.SwitchColours(Color.green, Color.yellow, 2);
             else Object1.SwitchColours(Color.yellow, Color.green, 2);
             _colour_done = !_colour_done;
         }
-        if (Input.GetKeyDown("o"))
-        {
-            Object1.PulseColour(5, 5);
-        }
-	}
+
+        if (Input.GetKeyDown("o")) Object1.PulseColour(5, 5);
+
+        if (Input.GetKeyDown("m")) Object1.Disappear(3);
+        
+        if (Input.GetKeyDown("j")) Object1.Appear(3);
+        
+    }
 }
