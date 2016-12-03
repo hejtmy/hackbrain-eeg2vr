@@ -41,7 +41,7 @@ public class _brain_Core : MonoBehaviour {
     {
         while (true)
         {
-            gameObject.transform.Rotate(angle * Time.deltaTime * speed);
+            gameObject.transform.Rotate(angle * Time.deltaTime * speed, Space.World);
             yield return null;
         }
     }

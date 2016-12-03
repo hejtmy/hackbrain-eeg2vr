@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using oscReceiver;
 
 public class _brain_TestSceneManager : MonoBehaviour {
 
@@ -12,22 +13,27 @@ public class _brain_TestSceneManager : MonoBehaviour {
 
     bool _colour_done = false;
 
+    public _brain_Object Alchemy;
+    public int AlchemyRotSpeed;
+
     public GameObject player;
 
     Vector2 centerPosition;
 	// Use this for initialization
 	void Start () {
         centerPosition = new Vector2(Screen.width / 2, Screen.height / 2);
-	}
-	
-	// Update is called once per frame
-	void Update () {
+        EegOscReceiver receiver = new EegOscReceiver(55056);
+        EegOscReceiver.ActiveFocusUpEvent += DoSth;
+    }
+
+    // Update is called once per frame
+    void Update () {
 
         if (Input.GetKeyDown("r")) Object1.Rotate(new Vector3(0, 1, 0), 100);
 
-	    if (Input.GetKeyDown("k"))
+
+        if (Input.GetKeyDown("t"))
         {
-            
             if (_colour_done) Object1.SwitchColours(Color.green, Color.yellow, 2);
             else Object1.SwitchColours(Color.yellow, Color.green, 2);
             _colour_done = !_colour_done;
@@ -39,9 +45,18 @@ public class _brain_TestSceneManager : MonoBehaviour {
         
         if (Input.GetKeyDown("j")) Object1.Appear(3);
 
-        if (Input.GetKeyDown("l")) Light1.ChangeColor(Color.green, 3);
+        if (Input.GetKeyDown("l"))
+        {
+            AlchemyRotSpeed += 10;
+            Alchemy.Rotate(new Vector3(0, 1, 0), AlchemyRotSpeed);
+        }
+        if (Input.GetKeyDown("k"))
+        {
+            AlchemyRotSpeed -= 10;
+            Alchemy.Rotate(new Vector3(0, 1, 0), AlchemyRotSpeed);
 
-        if (Input.GetKeyDown("p")) Light1.Rotate(Vector3.right, 50);
+        }
+        if (Input.GetKeyDown("p")) Light1.Rotate(new Vector3(0, 1, 0), 50);
 
         if (Input.GetKeyDown("t")) Anim1.SetBool("doDope", true);
 
@@ -62,5 +77,10 @@ public class _brain_TestSceneManager : MonoBehaviour {
             }
             // Do something with the object that was hit by the raycast.
         }
+    }
+
+    static void DoSth(double sth)
+    {
+
     }
 }
