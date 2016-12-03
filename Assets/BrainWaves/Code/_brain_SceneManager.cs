@@ -11,6 +11,7 @@ public class _brain_SceneManager : MonoBehaviour
 
     public _brain_OpenVibeSettings OpenVibeSettings;
     public _brain_ColourScheme ColourScheme;
+    public bvr_SceneSettings SceneSettigns;
 
     private bool _colourDone = false;
 
@@ -75,12 +76,12 @@ public class _brain_SceneManager : MonoBehaviour
         if (Input.GetKeyDown("j")) Object1.Appear(3);
         if (Input.GetKeyDown("l"))
         {
-            AlchemyRotSpeed += 10;
+            AlchemyRotSpeed += (int)SceneSettigns.AlchemySpeed;
             Alchemy.Rotate(new Vector3(0, 1, 0), AlchemyRotSpeed);
         }
         if (Input.GetKeyDown("k"))
         {
-            AlchemyRotSpeed -= 10;
+            AlchemyRotSpeed -= (int)SceneSettigns.AlchemySpeed;
             Alchemy.Rotate(new Vector3(0, 1, 0), AlchemyRotSpeed);
 
         }
