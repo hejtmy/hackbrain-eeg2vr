@@ -7,7 +7,10 @@ public class _brain_Object : _brain_Core {
     Vector3 _startPosition;
     public Vector3 AwayPosition;
 
+    private IEnumerator resizer;
+
     Material _mat;
+
 	// Use this for initialization
 	void Start ()
 	{
@@ -44,9 +47,11 @@ public class _brain_Object : _brain_Core {
 
     #endregion
     #region transformations
-    public void Resize(float newScale = 1)
+    public void Resize(float newScale, float duration)
     {
-
+        if (resizer != null) StopCoroutine(resizer);
+        resizer = Resizing(newScale, duration);
+        StartCoroutine(resizer);
     }
     #endregion
     #region Colour Changes
@@ -95,5 +100,20 @@ public class _brain_Object : _brain_Core {
         }
     }
 
+    protected IEnumerator Resizing(float targetScaleMult, float duration)
+    {
+        var startScale = gameObject.transform.localScale;
+        var targetScale = new Vector3(1, 1, 1) * targetScaleMult;
+        var elapsedTime = 0f;
+        var startTime = Time.realtimeSinceStartup;
+        while (elapsedTime < duration)
+        {
+            elapsedTime = Time.realtimeSinceStartup - startTime;
+            // TODO - needs to finish actually
+
+            gameObject.transform.localScale = Vector3.Lerp(startScale, targetScale, elapsedTime / duration);
+            yield return null;
+        }
+    }
     #endregion
 }

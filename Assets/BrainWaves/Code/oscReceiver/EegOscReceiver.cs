@@ -10,6 +10,7 @@ namespace oscReceiver
     public delegate void AffectionLevelDelegate(double eventData);
     public delegate void VerbalExcitementLevelDelegate(double eventData);
     public delegate void VisualExcitementLevelDelegate(double eventData);
+    public delegate void GyroscopeXYDelegate(double eventData);
 
     public class EegOscReceiver
     {
@@ -19,6 +20,8 @@ namespace oscReceiver
         public static event AffectionLevelDelegate AffectionLevelEvent;
         public static event VerbalExcitementLevelDelegate VerbalExcitementLevelEvent;
         public static event VisualExcitementLevelDelegate VisualExcitementLevelEvent;
+        public static event GyroscopeXYDelegate GyroscopeXEvent;
+        public static event GyroscopeXYDelegate GyroscopeYEvent;
         // private vars
         private int port;
         private bool isConnected;
@@ -27,7 +30,7 @@ namespace oscReceiver
         public EegOscReceiver(int port)
         {
             this.port = port;
-            isConnected = false;
+            this.isConnected = false;
         }
         // callback for UDPListener inside StartReceiving
         private HandleOscPacket udpListenerCallback = delegate (OscPacket packet)
@@ -71,6 +74,14 @@ namespace oscReceiver
                         if (VisualExcitementLevelEvent != null)
                             VisualExcitementLevelEvent(currentDoubleArgument);
                         break;
+                    case "/GYRO-X":
+                        if (GyroscopeXEvent != null)
+                            GyroscopeXEvent(currentDoubleArgument);
+                        break;
+                    case "/GYRO-Y":
+                        if (GyroscopeYEvent != null)
+                            GyroscopeYEvent(currentDoubleArgument);
+                        break;
                 }
             }
         };
@@ -82,7 +93,7 @@ namespace oscReceiver
         }
         public void StopReceiving()
         {
-            listener.Close();
+            if (listener != null) listener.Close();
             isConnected = false;
         }
         public bool IsConnected()

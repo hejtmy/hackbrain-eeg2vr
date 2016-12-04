@@ -3,8 +3,8 @@ using System.Collections;
 
 public class _brain_Core : MonoBehaviour {
 
-    IEnumerator rotation;
-    IEnumerator movement;
+    IEnumerator rotater;
+    IEnumerator mover;
 
     public float Speed;
 
@@ -22,20 +22,20 @@ public class _brain_Core : MonoBehaviour {
     public void Rotate(Vector3 angle, float speed)
     {
         StopRotating();
-        rotation = Rotating(angle, speed);
-        StartCoroutine(rotation);
+        rotater = Rotating(angle, speed);
+        StartCoroutine(rotater);
     }
 
     public void StopRotating()
     {
-        if(rotation != null) StopCoroutine(rotation);
+        if(rotater != null) StopCoroutine(rotater);
     }
 
     public void MoveTo(Vector3 where, float duration)
     {
-        if (movement != null) StopCoroutine(movement);
-        movement = Moving(where, duration);
-        StartCoroutine(movement);
+        if (mover != null) StopCoroutine(mover);
+        mover = Moving(where, duration);
+        StartCoroutine(mover);
     }
     #endregion
 
@@ -47,11 +47,6 @@ public class _brain_Core : MonoBehaviour {
             gameObject.transform.Rotate(angle * Time.deltaTime * speed, Space.World);
             yield return null;
         }
-    }
-
-    protected IEnumerator Resizing(float targetScale, float duration)
-    {
-        yield return null;
     }
 
     protected IEnumerator Moving(Vector3 where, float duration)

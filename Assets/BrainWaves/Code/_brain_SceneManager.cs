@@ -1,12 +1,17 @@
-﻿using UnityEngine;
+﻿using oscReceiver;
+using UnityEngine;
 
 public class _brain_SceneManager : MonoBehaviour
 {
     public GameObject Player;
 
     public _brain_Object Object1;
-    public _brain_DirLight Light1;
-    public Animator Anim1;
+
+    public _brain_DirLight DirLight1;
+    public _brain_DirLight DirLight2;
+    public _brain_DirLight PointLight1;
+
+    public bvr_Animator Anim1;
     public bvr_Listener Listener;
 
     public _brain_OpenVibeSettings OpenVibeSettings;
@@ -16,7 +21,6 @@ public class _brain_SceneManager : MonoBehaviour
     private bool _colourDone = false;
 
     public _brain_Object Alchemy;
-    public int AlchemyRotSpeed;
     
     //Raycasting helper
     Vector2 _centerPosition;
@@ -36,13 +40,43 @@ public class _brain_SceneManager : MonoBehaviour
     {
         if (Listener == null) return;
         Listener.AlfaChanged += AlfaChanged;
+        EegOscReceiver.ActiveFocusUpEvent += FocusIsUp;
+        EegOscReceiver.ActiveFocusDownEvent += FocusIsDown;
     }
+
     #region Subscription to Open Vibe
     private void AlfaChanged(double value)
     {
         if (value > 10) _rotating = true;
         else _rotating = false;
     }
+
+    private void FocusIsUp(double value)
+    {
+        if ((float)value < OpenVibeSettings.focusUpThreshold) return;
+        DirLight1.ChangeColor(ColourScheme.scheme1_primary, SceneSettigns.FocusChangeSpeed);
+        Anim1.SpeedUp(SceneSettigns.AlchemySpeed, SceneSettigns.FocusChangeSpeed);
+    }
+
+    private void FocusIsDown(double value)
+    {
+        if ((float)value > OpenVibeSettings.focusDownThreshold) return;
+        DirLight1.ChangeColor(ColourScheme.scheme2_primary, SceneSettigns.FocusChangeSpeed);
+        Anim1.SlowDown(SceneSettigns.FocusChangeSpeed);
+    }
+
+    private void ThinkingUp(double value)
+    {
+        if ((float)value < OpenVibeSettings.thinkingUpThreshold) return;
+        Alchemy.Resize(2, SceneSettigns.ThinkingUpDownSpeed);
+    }
+
+    private void ThinkingDown(double value)
+    {
+        if ((float)value < OpenVibeSettings.thinkingDownThreshold) return;
+
+    }
+
     #endregion
     // Update is called once per frame
     void Update()
@@ -54,8 +88,7 @@ public class _brain_SceneManager : MonoBehaviour
 
     private void EEGActions()
     {
-        if (!Listener.IsListening()) return;
-
+        if (!Listener.IsConnected()) return;
         //rotation of the object
         if (_rotating) Object1.Rotate(new Vector3(0, 1, 0), 10);
         else Object1.StopRotating();
@@ -64,29 +97,13 @@ public class _brain_SceneManager : MonoBehaviour
     private void KeyInput()
     {
         if (Input.GetKeyDown("r")) Object1.Rotate(new Vector3(0, 1, 0), 100);
-        if (Input.GetKeyDown("t"))
-        {
-            if (_colourDone) Object1.SwitchColours(Color.green, Color.yellow, 2);
-            else Object1.SwitchColours(Color.yellow, Color.green, 2);
-            _colourDone = !_colourDone;
-        }
-
-        if (Input.GetKeyDown("o")) Object1.PulseColour(5, 5);
-        if (Input.GetKeyDown("m")) Object1.Disappear(3);
-        if (Input.GetKeyDown("j")) Object1.Appear(3);
-        if (Input.GetKeyDown("l"))
-        {
-            AlchemyRotSpeed += (int)SceneSettigns.AlchemySpeed;
-            Alchemy.Rotate(new Vector3(0, 1, 0), AlchemyRotSpeed);
-        }
-        if (Input.GetKeyDown("k"))
-        {
-            AlchemyRotSpeed -= (int)SceneSettigns.AlchemySpeed;
-            Alchemy.Rotate(new Vector3(0, 1, 0), AlchemyRotSpeed);
-
-        }
-        if (Input.GetKeyDown("p")) Light1.Rotate(new Vector3(0, 1, 0), 50);
-        if (Input.GetKeyDown("t")) Anim1.SetBool("doDope", true);
+        if (Input.GetKeyDown("u")) DirLight1.ChangeColor(ColourScheme.scheme2_primary, 2);
+        if (Input.GetKeyDown("y")) DirLight1.ChangeColor(ColourScheme.scheme1_primary, 2);
+        if (Input.GetKeyDown("o")) Alchemy.Resize(2, SceneSettigns.ThinkingUpDownSpeed);
+        if (Input.GetKeyDown("l")) Anim1.SlowDown(SceneSettigns.FocusChangeSpeed);
+        if (Input.GetKeyDown("k")) Anim1.SpeedUp(3, SceneSettigns.FocusChangeSpeed); ;
+        if (Input.GetKeyDown("p")) DirLight1.Rotate(new Vector3(0, 1, 0), 5);
+        if (Input.GetKeyDown("t")) Anim1.PlayAnimation();
     }
 
     void Raycasing()

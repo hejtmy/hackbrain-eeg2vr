@@ -11,7 +11,7 @@ public class ExitScript : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-        if (Input.GetKeyDown("escape"))
+        if (Input.GetKeyDown("delete"))
         {
             Destroy(bvr_Listener.Get.gameObject);
             SceneManager.LoadScene(0);

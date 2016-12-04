@@ -4,28 +4,32 @@ using oscReceiver;
 using UnityEngine;
 
 public class bvr_Listener : Singleton<bvr_Listener> {
-    EegOscReceiver _receiver;
+    public EegOscReceiver Receiver;
 
     public delegate void AlfaHandler(double value);
     public event AlfaHandler AlfaChanged;
 
     // Use this for initialization
-    void Start () {
-        _receiver = new EegOscReceiver(55056);
+    void Awake () {
+        Receiver = new EegOscReceiver(55056);
+        Receiver.StartReceiving();
+        Subscribe();
+    }
+    void Subscribe()
+    {
         EegOscReceiver.ActiveFocusUpEvent += onUp;
         EegOscReceiver.BrainExcitementLevelEvent += alfa;
-        _receiver.StartReceiving();
     }
 
     void OnApplicationQuit()
     {
-        _receiver.StopReceiving();
+        Receiver.StopReceiving();
     }
 
     private void alfa(double eventData)
     {
         Debug.Log("Alfa:" + eventData);
-        AlfaChanged(eventData);
+        if (AlfaChanged != null) AlfaChanged(eventData);
     }
 
     private void onUp(double eventData)
@@ -33,9 +37,19 @@ public class bvr_Listener : Singleton<bvr_Listener> {
         Debug.Log("brain excited called:" + eventData);
     }
 
-    public bool IsListening()
+    private void GyroY(double diff)
     {
-        return false;
+
+    }
+
+    private void GyroX(double diff)
+    {
+
+    }
+
+    public bool IsConnected()
+    {
+        return Receiver.IsConnected();
         //else return true;
     }
 }
