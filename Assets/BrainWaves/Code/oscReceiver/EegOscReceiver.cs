@@ -21,11 +21,13 @@ namespace oscReceiver
         public static event VisualExcitementLevelDelegate VisualExcitementLevelEvent;
         // private vars
         private int port;
+        private bool isConnected;
         private UDPListener listener;
         // constructor
         public EegOscReceiver(int port)
         {
             this.port = port;
+            isConnected = false;
         }
         // callback for UDPListener inside StartReceiving
         private HandleOscPacket udpListenerCallback = delegate (OscPacket packet)
@@ -76,10 +78,16 @@ namespace oscReceiver
         public void StartReceiving()
         {
             listener = new UDPListener(port, udpListenerCallback);
+            isConnected = true;
         }
         public void StopReceiving()
         {
             listener.Close();
+            isConnected = false;
+        }
+        public bool IsConnected()
+        {
+            return isConnected;
         }
     };
 }
