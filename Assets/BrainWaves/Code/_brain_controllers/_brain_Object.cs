@@ -4,19 +4,29 @@ using System;
 
 public class _brain_Object : _brain_Core {
 
-    float Y_axis;
+    Vector3 _startPosition;
+    public Vector3 AwayPosition;
 
     Material _mat;
 	// Use this for initialization
 	void Start ()
-    {
+	{
+	    _startPosition = gameObject.transform.position;
         _mat = gameObject.GetComponentInChildren<Renderer>().material;
-        Y_axis = gameObject.transform.position.y;
 	}
 
     #region Public API
     #region Moving
 
+    public void MoveAway(float duration)
+    {
+        MoveTo(AwayPosition, duration);
+    }
+
+    public void MoveBack(float duration)
+    {
+        MoveTo(_startPosition, duration);
+    }
 
     public void Disappear(float duration)
     {
@@ -28,7 +38,7 @@ public class _brain_Object : _brain_Core {
     public void Appear(float duration)
     {
         var curPos = gameObject.transform.position;
-        var where = new Vector3(curPos.x, Y_axis, curPos.z);
+        var where = new Vector3(curPos.x, _startPosition.y, curPos.z);
         MoveTo(where, duration);
     }
 

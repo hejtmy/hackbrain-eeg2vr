@@ -4,22 +4,22 @@ using oscReceiver;
 using UnityEngine;
 
 public class _brain_Listener : MonoBehaviour {
-    EegOscReceiver receiver;
+    EegOscReceiver _receiver;
 
     public delegate void AlfaHandler(double value);
     public event AlfaHandler AlfaChanged;
 
     // Use this for initialization
     void Start () {
-        receiver = new EegOscReceiver(55056);
+        _receiver = new EegOscReceiver(55056);
         EegOscReceiver.ActiveFocusUpEvent += onUp;
         EegOscReceiver.BrainExcitementLevelEvent += alfa;
-        receiver.StartReceiving();
+        _receiver.StartReceiving();
     }
 
     void OnApplicationQuit()
     {
-        receiver.StopReceiving();
+        _receiver.StopReceiving();
     }
 
     private void alfa(double eventData)
