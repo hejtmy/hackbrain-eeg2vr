@@ -12,7 +12,6 @@ public class brv_IntroManager : MonoBehaviour {
     public void ConnectEEG()
     {
         //do sth
-        Connect.SetActive(false);
         StartExperience.SetActive(true);
     }
 
