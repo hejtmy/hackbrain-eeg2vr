@@ -11,9 +11,9 @@ public class ExitScript : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-        if (Input.GetKeyDown("delete"))
+        if (Input.GetButtonDown("Exit"))
         {
-            Destroy(bvr_Listener.Get.gameObject);
+            if(bvr_Listener.Get != null) Destroy(bvr_Listener.Get.gameObject);
             SceneManager.LoadScene(0);
         }
 	}

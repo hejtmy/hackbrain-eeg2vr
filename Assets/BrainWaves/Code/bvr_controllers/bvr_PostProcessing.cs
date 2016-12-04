@@ -25,7 +25,7 @@ public class bvr_PostProcessing : MonoBehaviour {
         vignetter = LerpingVignette(startvignette, target, duration);
         StartCoroutine(vignetter);
     }
-
+     
     IEnumerator LerpingVignette(float start, float target, float duration)
     {
         var elapsedTime = 0f;
