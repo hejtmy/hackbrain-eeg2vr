@@ -26,9 +26,11 @@ public class _brain_DirLight : _brain_Core {
     IEnumerator SwitchingColours(Color color1, Color color2, float duration)
     {
         var startTime = Time.realtimeSinceStartup;
-        while (Time.realtimeSinceStartup - startTime < duration)
+        var elapsedTime = 0.0f;
+        while (elapsedTime < duration)
         {
-            var lerpedColor = Color.Lerp(color1, color2, Mathf.PingPong(Time.time, 1));
+            elapsedTime = Time.realtimeSinceStartup - startTime;
+            var lerpedColor = Color.Lerp(color1, color2, elapsedTime / duration);
             thisLight.color = lerpedColor;
             yield return null;
         }

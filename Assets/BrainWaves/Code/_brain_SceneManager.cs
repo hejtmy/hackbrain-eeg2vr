@@ -1,11 +1,13 @@
 ﻿using oscReceiver;
+using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.PostProcessing;
 
 public class _brain_SceneManager : MonoBehaviour
 {
     public GameObject Player;
 
-    public _brain_Object Object1;
+    public List<_brain_Object> Pyramids;
 
     public _brain_DirLight DirLight1;
     public _brain_DirLight DirLight2;
@@ -14,6 +16,8 @@ public class _brain_SceneManager : MonoBehaviour
     public bvr_Animator Anim1;
     public bvr_Listener Listener;
 
+    public bvr_PostProcessing PostProcessing;
+
     public _brain_OpenVibeSettings OpenVibeSettings;
     public _brain_ColourScheme ColourScheme;
     public bvr_SceneSettings SceneSettigns;
@@ -21,7 +25,8 @@ public class _brain_SceneManager : MonoBehaviour
     private bool _colourDone = false;
 
     public _brain_Object Alchemy;
-    
+   
+
     //Raycasting helper
     Vector2 _centerPosition;
 
@@ -74,7 +79,6 @@ public class _brain_SceneManager : MonoBehaviour
     private void ThinkingDown(double value)
     {
         if ((float)value < OpenVibeSettings.thinkingDownThreshold) return;
-
     }
 
     #endregion
@@ -90,13 +94,23 @@ public class _brain_SceneManager : MonoBehaviour
     {
         if (!Listener.IsConnected()) return;
         //rotation of the object
-        if (_rotating) Object1.Rotate(new Vector3(0, 1, 0), 10);
-        else Object1.StopRotating();
+        if (_rotating)
+        {
+            foreach (var obj in Pyramids)
+                obj.Rotate(new Vector3(0, 1, 0), 100);
+        }
+        else
+            foreach (var obj in Pyramids)
+                obj.StopRotating();
     }
 
     private void KeyInput()
     {
-        if (Input.GetKeyDown("r")) Object1.Rotate(new Vector3(0, 1, 0), 100);
+        if (Input.GetKeyDown("r"))
+        {
+            foreach (var obj in Pyramids)
+                obj.Rotate(new Vector3(0, 1, 0), 100);
+        }
         if (Input.GetKeyDown("u")) DirLight1.ChangeColor(ColourScheme.scheme2_primary, 2);
         if (Input.GetKeyDown("y")) DirLight1.ChangeColor(ColourScheme.scheme1_primary, 2);
         if (Input.GetKeyDown("o")) Alchemy.Resize(2, SceneSettigns.ThinkingUpDownSpeed);
@@ -104,6 +118,34 @@ public class _brain_SceneManager : MonoBehaviour
         if (Input.GetKeyDown("k")) Anim1.SpeedUp(3, SceneSettigns.FocusChangeSpeed); ;
         if (Input.GetKeyDown("p")) DirLight1.Rotate(new Vector3(0, 1, 0), 5);
         if (Input.GetKeyDown("t")) Anim1.PlayAnimation();
+        if (Input.GetKeyDown("m"))
+        {
+            foreach (var obj in Pyramids)
+                obj.MoveAway(3);
+        }
+        if (Input.GetKeyDown("n"))
+        {
+            DirLight1.ChangeColor(ColourScheme.scheme1_primary, SceneSettigns.FocusChangeSpeed);
+            DirLight2.ChangeColor(ColourScheme.scheme1_primary, SceneSettigns.FocusChangeSpeed);
+            PostProcessing.LerpVignette(SceneSettigns.VignetteFocused, SceneSettigns.FocusChangeSpeed);
+            foreach (var obj in Pyramids)
+                obj.Rotate(new Vector3(0, 1, 0), 100);
+            foreach (var obj in Pyramids)
+                obj.MoveBack(3);
+        }
+        if (Input.GetKeyDown("b"))
+        {
+            Anim1.SpeedUp(SceneSettigns.AlchemySpeed, SceneSettigns.FocusChangeSpeed);
+            PostProcessing.LerpVignette(SceneSettigns.VignetteRelaxed, SceneSettigns.FocusChangeSpeed);
+            foreach (var obj in Pyramids)
+                obj.MoveAway(3);
+            DirLight1.ChangeColor(ColourScheme.scheme2_primary, 2);
+            DirLight2.ChangeColor(ColourScheme.scheme2_primary, 2);
+
+        }
+
+
+
     }
 
     void Raycasing()
@@ -111,7 +153,11 @@ public class _brain_SceneManager : MonoBehaviour
         Ray ray = Player.GetComponentInChildren<Camera>().ScreenPointToRay(_centerPosition);
         RaycastHit hit;
         if (Physics.Raycast(ray, out hit))
-            if (hit.collider.tag == "BrainObject")
-                Object1 = hit.collider.gameObject.GetComponent<_brain_Object>();
+            if (hit.collider.tag == "BrainObject") { }
+                //Object1 = hit.collider.gameObject.GetComponent<_brain_Object>();
     }
+
+    #region PostProcessing changes
+
+    #endregion
 }
