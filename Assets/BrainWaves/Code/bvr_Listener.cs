@@ -3,7 +3,7 @@
 using oscReceiver;
 using UnityEngine;
 
-public class _brain_Listener : MonoBehaviour {
+public class bvr_Listener : Singleton<bvr_Listener> {
     EegOscReceiver _receiver;
 
     public delegate void AlfaHandler(double value);

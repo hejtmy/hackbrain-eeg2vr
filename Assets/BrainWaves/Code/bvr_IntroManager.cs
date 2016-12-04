@@ -2,7 +2,7 @@
 using System.Collections;
 using UnityEngine.SceneManagement;
 
-public class brv_IntroManager : MonoBehaviour {
+public class bvr_IntroManager : Singleton<bvr_EEGVisualiser> {
 
     public GameObject StartExperience;
     public GameObject Connect;
@@ -17,6 +17,7 @@ public class brv_IntroManager : MonoBehaviour {
 
     public void StartLevel()
     {
+        DontDestroyOnLoad(bvr_Listener.Get.gameObject);
         SceneManager.LoadScene("FogThing");
     }
 

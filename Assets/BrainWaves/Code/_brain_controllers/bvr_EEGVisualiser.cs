@@ -2,7 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 
-public class brv_EEGVisualiser : MonoBehaviour {
+public class bvr_EEGVisualiser : MonoBehaviour {
 
     public float Amplitude;
     private Vector3 _startPosition;
