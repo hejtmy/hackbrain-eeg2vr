@@ -17,8 +17,8 @@ public class bvr_Listener : Singleton<bvr_Listener> {
     }
     void Subscribe()
     {
-        EegOscReceiver.ActiveFocusUpEvent += onUp;
-        EegOscReceiver.BrainExcitementLevelEvent += alfa;
+        //EegOscReceiver.ActiveFocusUpEvent += onUp;
+        //EegOscReceiver.BrainExcitementLevelEvent += alfa;
     }
 
     void OnApplicationQuit()

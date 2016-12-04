@@ -4,22 +4,14 @@ using SharpOSC;
 namespace oscReceiver
 {
     // event delegates
-    public delegate void ActiveFocusUpDelegate(double eventData);
-    public delegate void ActiveFocusDownDelegate(double eventData);
-    public delegate void BrainExcitementLevelDelegate(double eventData);
-    public delegate void AffectionLevelDelegate(double eventData);
-    public delegate void VerbalExcitementLevelDelegate(double eventData);
-    public delegate void VisualExcitementLevelDelegate(double eventData);
-    public delegate void GyroscopeXYDelegate(double eventData);
+    public delegate void HorizontalFocusDelegate(double distance, double probabilityLeft, double probabilityRight);
+    public delegate void ConcentrationLevelDeleagte(double concentrationLevel);
+    public delegate void GyroscopeXYDelegate(double coordinate);
 
     public class EegOscReceiver
     {
-        public static event ActiveFocusUpDelegate ActiveFocusUpEvent;
-        public static event ActiveFocusDownDelegate ActiveFocusDownEvent;
-        public static event BrainExcitementLevelDelegate BrainExcitementLevelEvent;
-        public static event AffectionLevelDelegate AffectionLevelEvent;
-        public static event VerbalExcitementLevelDelegate VerbalExcitementLevelEvent;
-        public static event VisualExcitementLevelDelegate VisualExcitementLevelEvent;
+        public static event HorizontalFocusDelegate HorizontalFocusEvent;
+        public static event ConcentrationLevelDeleagte ConcentrationLevelEvent;
         public static event GyroscopeXYDelegate GyroscopeXEvent;
         public static event GyroscopeXYDelegate GyroscopeYEvent;
         // private vars
@@ -40,39 +32,29 @@ namespace oscReceiver
             {
                 string currentAddress = msg.Messages[i].Address;
                 var currentArgument = msg.Messages[i].Arguments[0]; // possible error, assuming only one argument per address.
-                double currentDoubleArgument;
-
-                if (!Double.TryParse(currentArgument.ToString(), out currentDoubleArgument))
-                {
-                    // failed
+                Console.WriteLine("callback called.");
+                double currentDoubleArgument; if (!Double.TryParse(currentArgument.ToString(), out currentDoubleArgument)) // failed
                     throw new ArgumentException("Expected double got: " + currentArgument.GetType().ToString());
-                }
-                // Console.WriteLine("callback function called. currentAddress: " + currentAddress + ", currentDoubleArgument: " + currentDoubleArgument);
                 switch (currentAddress)
                 {
-                    case "/up":
-                        if (ActiveFocusUpEvent != null)
-                            ActiveFocusUpEvent(currentDoubleArgument);
-                        break;
-                    case "/down":
-                        if (ActiveFocusDownEvent != null)
-                            ActiveFocusDownEvent(currentDoubleArgument);
-                        break;
-                    case "/alfa": // excitement weightedAlphaSum
-                        if (BrainExcitementLevelEvent != null)
-                            BrainExcitementLevelEvent(currentDoubleArgument);
-                        break;
-                    case "/frontalAlfaAsymetry": // positive reaction
-                        if (AffectionLevelEvent != null)
-                            AffectionLevelEvent(currentDoubleArgument);
-                        break;
-                    case "/verbalCenterExcitement":
-                        if (VerbalExcitementLevelEvent != null)
-                            VerbalExcitementLevelEvent(currentDoubleArgument);
-                        break;
-                    case "/visualCenterExcitement":
-                        if (VisualExcitementLevelEvent != null)
-                            VisualExcitementLevelEvent(currentDoubleArgument);
+                    case "/horizontalFocus":
+                        double distance1, distance2, probabilityLeft, probabilityRight;
+
+                        if (!Double.TryParse(msg.Messages[0].Arguments[0].ToString(), out distance1))
+                            throw new ArgumentException("Expected double got: " + msg.Messages[0].Arguments[0].GetType().ToString());
+                        if (!Double.TryParse(msg.Messages[1].Arguments[0].ToString(), out distance2))
+                            throw new ArgumentException("Expected double got: " + msg.Messages[1].Arguments[0].GetType().ToString());
+                        if (!Double.TryParse(msg.Messages[2].Arguments[0].ToString(), out probabilityLeft))
+                            throw new ArgumentException("Expected double got: " + msg.Messages[2].Arguments[0].GetType().ToString());
+                        if (!Double.TryParse(msg.Messages[3].Arguments[0].ToString(), out probabilityRight))
+                            throw new ArgumentException("Expected double got: " + msg.Messages[3].Arguments[0].GetType().ToString());
+
+                        distance1 = (distance1 + distance2) / 2;
+                        if (HorizontalFocusEvent != null)
+                        {
+                            // Console.WriteLine("distance: " + distance1 + ", probLeft: " + probabilityLeft + ", probRight: " + probabilityRight);
+                            HorizontalFocusEvent(distance1, probabilityLeft, probabilityRight);
+                        }
                         break;
                     case "/GYRO-X":
                         if (GyroscopeXEvent != null)
@@ -93,7 +75,7 @@ namespace oscReceiver
         }
         public void StopReceiving()
         {
-            if (listener != null) listener.Close();
+            listener.Close();
             isConnected = false;
         }
         public bool IsConnected()

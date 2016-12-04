@@ -25,7 +25,9 @@ public class _brain_SceneManager : MonoBehaviour
     private bool _colourDone = false;
 
     public _brain_Object Alchemy;
-   
+
+    private bool _thinkingDown;
+    private bool _thinkingUp;
 
     //Raycasting helper
     Vector2 _centerPosition;
@@ -45,8 +47,9 @@ public class _brain_SceneManager : MonoBehaviour
     {
         if (Listener == null) return;
         Listener.AlfaChanged += AlfaChanged;
-        EegOscReceiver.ActiveFocusUpEvent += FocusIsUp;
-        EegOscReceiver.ActiveFocusDownEvent += FocusIsDown;
+        //EegOscReceiver.ActiveFocusUpEvent += FocusIsUp;
+        //EegOscReceiver.ActiveFocusDownEvent += FocusIsDown;
+        EegOscReceiver.HorizontalFocusEvent += HorizontalThinking;
     }
 
     #region Subscription to Open Vibe
@@ -73,12 +76,25 @@ public class _brain_SceneManager : MonoBehaviour
     private void ThinkingUp(double value)
     {
         if ((float)value < OpenVibeSettings.thinkingUpThreshold) return;
-        Alchemy.Resize(2, SceneSettigns.ThinkingUpDownSpeed);
+        Debug.Log("ThinkginUp");
+
+        _thinkingDown = false;
+        _thinkingUp = true;
     }
 
     private void ThinkingDown(double value)
     {
         if ((float)value < OpenVibeSettings.thinkingDownThreshold) return;
+        Debug.Log("ThinkginDown");
+        _thinkingDown = true;
+        _thinkingUp = false;
+    }
+
+    private void HorizontalThinking(double direction, double probLeft, double probRight)
+    {      
+        if (probLeft - probRight < 0.4) return;
+        if (probRight - probLeft > 0) ThinkingUp(100);
+        else ThinkingDown(100);
     }
 
     #endregion
@@ -144,8 +160,27 @@ public class _brain_SceneManager : MonoBehaviour
 
         }
 
+        if (_thinkingUp)
+        {
+            Alchemy.Resize(2, SceneSettigns.ThinkingUpDownSpeed);
+            Anim1.SpeedUp(SceneSettigns.AlchemySpeed, SceneSettigns.FocusChangeSpeed);
+            PostProcessing.LerpVignette(SceneSettigns.VignetteRelaxed, SceneSettigns.FocusChangeSpeed);
+            foreach (var obj in Pyramids)
+                obj.MoveAway(3);
+            DirLight1.ChangeColor(ColourScheme.scheme2_primary, 2);
+            DirLight2.ChangeColor(ColourScheme.scheme2_primary, 2);
+        }
 
-
+        if (_thinkingDown)
+        {
+            DirLight1.ChangeColor(ColourScheme.scheme1_primary, SceneSettigns.FocusChangeSpeed);
+            DirLight2.ChangeColor(ColourScheme.scheme1_primary, SceneSettigns.FocusChangeSpeed);
+            PostProcessing.LerpVignette(SceneSettigns.VignetteFocused, SceneSettigns.FocusChangeSpeed);
+            foreach (var obj in Pyramids)
+                obj.Rotate(new Vector3(0, 1, 0), 100);
+            foreach (var obj in Pyramids)
+                obj.MoveBack(3);
+        }
     }
 
     void Raycasing()
