@@ -1,3 +1,7 @@
+!*.dll
+!*.obj
+*.sln
+
 ################################################################################
 # This .gitignore file was automatically created by Microsoft(R) Visual Studio.
 ################################################################################
@@ -25,7 +29,6 @@ ProjectSettings/ProjectVersion.txt
 x64/
 build/
 [Bb]in/
-[Oo]bj/
 
 # NuGet Packages
 *.nupkg
@@ -43,7 +46,6 @@ build/
 *_i.c
 *_p.c
 *.ilk
-*.obj
 *.pch
 *.pdb
 *.pgc
