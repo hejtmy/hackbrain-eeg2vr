@@ -18,7 +18,7 @@ public class _brain_TestSceneManager : MonoBehaviour {
 
     public GameObject player;
 
-    public _brain_Listener listener;
+    public bvr_Listener listener;
 
     Vector2 centerPosition;
 

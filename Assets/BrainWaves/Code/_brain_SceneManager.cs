@@ -7,7 +7,7 @@ public class _brain_SceneManager : MonoBehaviour
     public _brain_Object Object1;
     public _brain_DirLight Light1;
     public Animator Anim1;
-    public _brain_Listener Listener;
+    public bvr_Listener Listener;
 
     public _brain_OpenVibeSettings OpenVibeSettings;
     public _brain_ColourScheme ColourScheme;
