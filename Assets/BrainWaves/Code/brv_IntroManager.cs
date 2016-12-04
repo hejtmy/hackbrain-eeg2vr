@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using UnityEngine.SceneManagement;
 
 public class brv_IntroManager : MonoBehaviour {
 
@@ -7,9 +8,6 @@ public class brv_IntroManager : MonoBehaviour {
     public GameObject Connect;
 
 	// Use this for initialization
-	void Start () {
-	
-	}
 	
     public void ConnectEEG()
     {
@@ -20,7 +18,7 @@ public class brv_IntroManager : MonoBehaviour {
 
     public void StartLevel()
     {
-
+        SceneManager.LoadScene("FogThing");
     }
 
     public void Quit()
