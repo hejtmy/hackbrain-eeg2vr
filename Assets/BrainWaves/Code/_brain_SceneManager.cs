@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.PostProcessing;
+using System;
 
 public class _brain_SceneManager : MonoBehaviour
 {
@@ -58,7 +59,13 @@ public class _brain_SceneManager : MonoBehaviour
         //EegOscReceiver.ActiveFocusUpEvent += FocusIsUp;
         //EegOscReceiver.ActiveFocusDownEvent += FocusIsDown;
         EegOscReceiver.HorizontalFocusEvent += HorizontalThinking;
-        //EegOscReceiver.GyroscopeXEvent += Concentration;
+        EegOscReceiver.GyroscopeXEvent += Concentration;
+        EegOscReceiver.GyroscopeYEvent += ThetaAction;
+    }
+
+    private void ThetaAction(double coordinate)
+    {
+        Debug.Log("Theta:" +  coordinate);
     }
 
     #region Subscription to Open Vibe
@@ -165,7 +172,7 @@ public class _brain_SceneManager : MonoBehaviour
     {
         DirLight1.ChangeColor(ColourScheme.scheme1_primary, SceneSettigns.FocusChangeSpeed);
         DirLight2.ChangeColor(ColourScheme.scheme1_primary, SceneSettigns.FocusChangeSpeed);
-        PostProcessing.LerpVignette(SceneSettigns.VignetteRelaxed, SceneSettigns.FocusChangeSpeed);
+        PostProcessing.LerpVignette(SceneSettigns.VignetteFocused, SceneSettigns.FocusChangeSpeed);
         Anim1.SpeedUp(3, SceneSettigns.FocusChangeSpeed);
         foreach (var obj in Pyramids)
             obj.MoveAway(3);
@@ -175,7 +182,7 @@ public class _brain_SceneManager : MonoBehaviour
     {
         DirLight1.ChangeColor(ColourScheme.scheme2_primary, SceneSettigns.FocusChangeSpeed);
         DirLight2.ChangeColor(ColourScheme.scheme2_primary, SceneSettigns.FocusChangeSpeed);
-        PostProcessing.LerpVignette(SceneSettigns.VignetteFocused, SceneSettigns.FocusChangeSpeed);
+        PostProcessing.LerpVignette(SceneSettigns.VignetteRelaxed, SceneSettigns.FocusChangeSpeed);
         Anim1.SlowDown(SceneSettigns.FocusChangeSpeed);
         foreach (var obj in Pyramids)
             obj.MoveBack(3);
