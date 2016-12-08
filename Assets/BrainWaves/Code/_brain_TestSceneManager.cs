@@ -5,15 +5,15 @@ using System;
 public class _brain_TestSceneManager : MonoBehaviour {
 
 
-    public _brain_Object Object1;
+    public bvr_Object Object1;
 
-    public _brain_DirLight Light1;
+    public bvr_DirLight Light1;
 
     public Animator Anim1;
 
     bool _colour_done = false;
 
-    public _brain_Object Alchemy;
+    public bvr_Object Alchemy;
     public int AlchemyRotSpeed;
 
     public GameObject player;
@@ -77,7 +77,7 @@ public class _brain_TestSceneManager : MonoBehaviour {
         {
             if(hit.collider.tag == "BrainObject")
             {
-                Object1 = hit.collider.gameObject.GetComponent<_brain_Object>();
+                Object1 = hit.collider.gameObject.GetComponent<bvr_Object>();
             }
             // Do something with the object that was hit by the raycast.
         }

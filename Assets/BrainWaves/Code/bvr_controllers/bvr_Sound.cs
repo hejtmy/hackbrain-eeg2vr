@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class _brain_Sound : MonoBehaviour {
+public class bvr_Sound : MonoBehaviour {
 
     public AudioSource tick;
     public AudioSource bass;

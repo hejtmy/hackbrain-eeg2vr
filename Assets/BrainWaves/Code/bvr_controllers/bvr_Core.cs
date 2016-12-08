@@ -1,22 +1,12 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class _brain_Core : MonoBehaviour {
+public class bvr_Core : MonoBehaviour {
 
     IEnumerator rotater;
     IEnumerator mover;
 
     public float Speed;
-
-    // Use this for initialization
-    void Start () {
-	
-	}
-	
-	// Update is called once per frame
-	void Update () {
-	
-	}
 
     #region Public API
     public void Rotate(Vector3 angle, float speed)
