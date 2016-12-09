@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class _brain_Particles : MonoBehaviour {
+public class bvr_Particles : MonoBehaviour {
 
     public bvr_SceneSettings settings;
     private ParticleSystem particles;

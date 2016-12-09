@@ -2,29 +2,30 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.PostProcessing;
+using System;
 
-public class _brain_SceneManager : MonoBehaviour
+public class bvr_SceneManager : MonoBehaviour
 {
     public GameObject Player;
 
-    public List<_brain_Object> Pyramids;
+    public List<bvr_Object> Pyramids;
 
-    public _brain_DirLight DirLight1;
-    public _brain_DirLight DirLight2;
-    public _brain_DirLight PointLight1;
+    public bvr_DirLight DirLight1;
+    public bvr_DirLight DirLight2;
+    public bvr_DirLight PointLight1;
 
     public bvr_Animator Anim1;
     bvr_Listener Listener;
 
     public bvr_PostProcessing PostProcessing;
 
-    public _brain_OpenVibeSettings OpenVibeSettings;
-    public _brain_ColourScheme ColourScheme;
+    public bvr_OpenVibeSettings OpenVibeSettings;
+    public bvr_ColourScheme ColourScheme;
     public bvr_SceneSettings SceneSettigns;
 
     private bool _colourDone = false;
 
-    public _brain_Object Alchemy;
+    public bvr_Object Alchemy;
 
     private bool _thinkingDown;
     private bool _thinkingUp;
@@ -58,7 +59,13 @@ public class _brain_SceneManager : MonoBehaviour
         //EegOscReceiver.ActiveFocusUpEvent += FocusIsUp;
         //EegOscReceiver.ActiveFocusDownEvent += FocusIsDown;
         EegOscReceiver.HorizontalFocusEvent += HorizontalThinking;
-        //EegOscReceiver.GyroscopeXEvent += Concentration;
+        EegOscReceiver.GyroscopeXEvent += Concentration;
+        EegOscReceiver.GyroscopeYEvent += ThetaAction;
+    }
+
+    private void ThetaAction(double coordinate)
+    {
+        Debug.Log("Theta:" +  coordinate);
     }
 
     #region Subscription to Open Vibe
@@ -121,7 +128,8 @@ public class _brain_SceneManager : MonoBehaviour
 
     private void EEGActions()
     {
-        if (!Listener.IsConnected()) return;
+
+        if (!Listener || !Listener.IsConnected()) return;
         //rotation of the object
         if (_previousConcentrated != _concentrated)
         {
@@ -165,7 +173,7 @@ public class _brain_SceneManager : MonoBehaviour
     {
         DirLight1.ChangeColor(ColourScheme.scheme1_primary, SceneSettigns.FocusChangeSpeed);
         DirLight2.ChangeColor(ColourScheme.scheme1_primary, SceneSettigns.FocusChangeSpeed);
-        PostProcessing.LerpVignette(SceneSettigns.VignetteRelaxed, SceneSettigns.FocusChangeSpeed);
+        PostProcessing.LerpVignette(SceneSettigns.VignetteFocused, SceneSettigns.FocusChangeSpeed);
         Anim1.SpeedUp(3, SceneSettigns.FocusChangeSpeed);
         foreach (var obj in Pyramids)
             obj.MoveAway(3);
@@ -175,7 +183,7 @@ public class _brain_SceneManager : MonoBehaviour
     {
         DirLight1.ChangeColor(ColourScheme.scheme2_primary, SceneSettigns.FocusChangeSpeed);
         DirLight2.ChangeColor(ColourScheme.scheme2_primary, SceneSettigns.FocusChangeSpeed);
-        PostProcessing.LerpVignette(SceneSettigns.VignetteFocused, SceneSettigns.FocusChangeSpeed);
+        PostProcessing.LerpVignette(SceneSettigns.VignetteRelaxed, SceneSettigns.FocusChangeSpeed);
         Anim1.SlowDown(SceneSettigns.FocusChangeSpeed);
         foreach (var obj in Pyramids)
             obj.MoveBack(3);

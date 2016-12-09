@@ -1,12 +1,10 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class _brain_Pulse : _brain_Core {  
+public class bvr_Pulse : bvr_Core {  
     public Color Color;
     public float Speed = 1;
     public float Strength;
-
-
 
     public IEnumerator pulse;
     private Vector3 _direction = new Vector3(1, 0, 0);

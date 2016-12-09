@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class _brain_DirLight : _brain_Core {
+public class bvr_DirLight : bvr_Core {
 
     Light thisLight;
     IEnumerator colorSwitching;
