@@ -2,7 +2,7 @@
 using System.Collections;
 using System;
 
-public class _brain_Object : _brain_Core {
+public class bvr_Object : bvr_Core {
 
     Vector3 _startPosition;
     public Vector3 AwayPosition;
