@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 using UnityStandardAssets.Characters.FirstPerson;
-using oscReceiver;
+using SharpOSC;
 using System;
 
 public class bvr_GyroController : MonoBehaviour {
@@ -32,25 +32,38 @@ public class bvr_GyroController : MonoBehaviour {
 	
     void Subscribe()
     {
-        EegOscReceiver.GyroscopeXEvent += GyroscopeX;
-        EegOscReceiver.GyroscopeYEvent += GyroscopeY;
+        Listener.Receiver.AddAction("/GyroscopeX", GyroscopeX);
+        Listener.Receiver.AddAction("/GyroscopeY", GyroscopeY);
     }
 
-    private void GyroscopeY(double eventData)
+    private double parseDoubleFromString(string s)
     {
+        double outputDouble;
+
+        if (!Double.TryParse(s, out outputDouble))
+        {
+            throw new InvalidCastException("Not able to parse double from input string.");
+        }
+        return outputDouble;
+    }
+
+    private void GyroscopeY(OscBundle data)
+    {
+        double gyroValue = parseDoubleFromString(data.Messages[0].Arguments[0].ToString());
         //Movign camera
-        Debug.Log("Receiving Y" + eventData);
-        Y_diff = (Y_axis - (float)eventData) * Y_sensitivity;
-        Y_axis = (float)eventData;
+        Debug.Log("Receiving Y" + gyroValue);
+        Y_diff = (Y_axis - (float)gyroValue) * Y_sensitivity;
+        Y_axis = (float)gyroValue;
         rotation = new Vector3(rotation.x, rotation.y + Y_diff, rotation.z);
     }
 
-    private void GyroscopeX(double eventData)
+    private void GyroscopeX(OscBundle data)
     {
+        double gyroValue = parseDoubleFromString(data.Messages[0].Arguments[0].ToString());
         //Movign camera
-        Debug.Log("Receiving X" + eventData);
-        X_diff = (X_axis - (float)eventData) * X_sensitivity;
-        X_axis = (float)eventData;
+        Debug.Log("Receiving X" + gyroValue);
+        X_diff = (X_axis - (float)gyroValue) * X_sensitivity;
+        X_axis = (float)gyroValue;
         rotation = new Vector3(rotation.x + X_diff, rotation.y, rotation.z);
     }
 

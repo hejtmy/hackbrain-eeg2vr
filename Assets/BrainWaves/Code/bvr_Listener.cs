@@ -1,24 +1,27 @@
 ﻿#define DEBUG
-
-using oscReceiver;
 using UnityEngine;
+using SharpOSC;
+using System;
 
-public class bvr_Listener : Singleton<bvr_Listener> {
-    public EegOscReceiver Receiver;
+public class bvr_Listener : Singleton<bvr_Listener>
+{
+    public OscReceiver Receiver;
 
     public delegate void AlfaHandler(double value);
     public event AlfaHandler AlfaChanged;
 
     // Use this for initialization
-    void Awake () {
-        Receiver = new EegOscReceiver(55056);
-        Receiver.StartReceiving();
+    void Awake()
+    {
+        Receiver = new OscReceiver(12345);
         Subscribe();
+        Receiver.StartReceiving();
     }
+
     void Subscribe()
     {
-        //EegOscReceiver.ActiveFocusUpEvent += onUp;
-        //EegOscReceiver.BrainExcitementLevelEvent += alfa;
+        Receiver.AddAction("/onUp", onUp);
+        Receiver.AddAction("/alfa", alfa);
     }
 
     void OnApplicationQuit()
@@ -26,30 +29,44 @@ public class bvr_Listener : Singleton<bvr_Listener> {
         Receiver.StopReceiving();
     }
 
-    private void alfa(double eventData)
+    private double parseDoubleFromString(string s)
     {
-        Debug.Log("Alfa:" + eventData);
-        if (AlfaChanged != null) AlfaChanged(eventData);
+        double outputDouble;
+
+        if (!Double.TryParse(s, out outputDouble))
+        {
+            throw new InvalidCastException("Not able to parse double from input string.");
+        }
+        return outputDouble;
     }
 
-    private void onUp(double eventData)
+    private void alfa(OscBundle data)
     {
-        Debug.Log("brain excited called:" + eventData);
+        // expecting 1 message with 1 argument of type double ~ this info has to be hardcoded. Get the info from OpenVIBE settings.
+        double alfaValue = parseDoubleFromString(data.Messages[0].Arguments[0].ToString());
+
+        Debug.Log("Alfa:" + alfaValue);
+        if (AlfaChanged != null) AlfaChanged(alfaValue);
     }
 
-    private void GyroY(double diff)
+    private void onUp(OscBundle data)
+    {
+        Debug.Log("brain excited called:" + data);
+    }
+
+    private void GyroY(OscBundle data)
     {
 
     }
 
-    private void GyroX(double diff)
+    private void GyroX(OscBundle data)
     {
 
     }
 
     public bool IsConnected()
     {
-        return Receiver.IsConnected();
+        return Receiver.IsReceiving();
         //else return true;
     }
 }
