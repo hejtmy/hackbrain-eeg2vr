@@ -13,6 +13,23 @@ public class bvr_Listener : Singleton<bvr_Listener>
     // Use this for initialization
     void Awake()
     {
+        if (Receiver != null) ResetConnection();
+        else SetupConnection();
+    }
+
+    void OnDestroy()
+    {
+        Receiver.StopReceiving();
+    }
+
+    public void ResetConnection()
+    {
+        Receiver.StopReceiving();
+        SetupConnection();
+    }
+
+    public void SetupConnection()
+    {
         Receiver = new OscReceiver(12345);
         Subscribe();
         Receiver.StartReceiving();
@@ -22,11 +39,6 @@ public class bvr_Listener : Singleton<bvr_Listener>
     {
         Receiver.AddAction("/onUp", onUp);
         Receiver.AddAction("/alfa", alfa);
-    }
-
-    void OnApplicationQuit()
-    {
-        Receiver.StopReceiving();
     }
 
     private double parseDoubleFromString(string s)
@@ -54,19 +66,11 @@ public class bvr_Listener : Singleton<bvr_Listener>
         Debug.Log("brain excited called:" + data);
     }
 
-    private void GyroY(OscBundle data)
-    {
-
-    }
-
-    private void GyroX(OscBundle data)
-    {
-
-    }
-
     public bool IsConnected()
     {
         return Receiver.IsReceiving();
         //else return true;
     }
+
+
 }
