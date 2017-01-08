@@ -1,4 +1,4 @@
-﻿using oscReceiver;
+﻿using SharpOSC;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.PostProcessing;
@@ -55,22 +55,33 @@ public class bvr_SceneManager : MonoBehaviour
     void Subscribe()
     {
         if (Listener == null) return;
-        Listener.AlfaChanged += AlfaChanged;
-        //EegOscReceiver.ActiveFocusUpEvent += FocusIsUp;
-        //EegOscReceiver.ActiveFocusDownEvent += FocusIsDown;
-        EegOscReceiver.HorizontalFocusEvent += HorizontalThinking;
-        EegOscReceiver.GyroscopeXEvent += Concentration;
-        EegOscReceiver.GyroscopeYEvent += ThetaAction;
+        Listener.Receiver.AddAction("/alpha", AlfaChanged);
+        Listener.Receiver.AddAction("/horizontalFocus", HorizontalThinking);
+        Listener.Receiver.AddAction("/GyroscopeX", Concentration);
+        Listener.Receiver.AddAction("/GyroscopeY", ThetaAction);
     }
 
-    private void ThetaAction(double coordinate)
+    private double parseDoubleFromString(string s)
     {
+        double outputDouble;
+
+        if (!Double.TryParse(s, out outputDouble))
+        {
+            throw new InvalidCastException("Not able to parse double from input string.");
+        }
+        return outputDouble;
+    }
+
+    private void ThetaAction(OscBundle data)
+    {
+        double coordinate = parseDoubleFromString(data.Messages[0].Arguments[0].ToString());
         Debug.Log("Theta:" +  coordinate);
     }
 
     #region Subscription to Open Vibe
-    private void AlfaChanged(double value)
+    private void AlfaChanged(OscBundle data)
     {
+        double value = parseDoubleFromString(data.Messages[0].Arguments[0].ToString());
         if (value > 10) _rotating = true;
         else _rotating = false;
     }
@@ -103,15 +114,25 @@ public class bvr_SceneManager : MonoBehaviour
         _concentrated = false;
     }
 
-    private void HorizontalThinking(double direction, double probLeft, double probRight)
+    private void HorizontalThinking(OscBundle data)
     {      
+        parseDoubleFromString(data.Messages[0].Arguments[0].ToString());
+
+        throw new NotImplementedException("Need to fix indexes in arguments of parseDoubleFromString function according to OscBundle data.");
+
+        double direction = parseDoubleFromString(data.Messages[0].Arguments[0].ToString());
+        double probLeft = parseDoubleFromString(data.Messages[0].Arguments[0].ToString());
+        double probRight = parseDoubleFromString(data.Messages[0].Arguments[0].ToString());
+
         if (probLeft - probRight < 0.4) return;
         if (probRight - probLeft > 0) ThinkingUp(100);
         else ThinkingDown(100);
     }
 
-    private void Concentration(double value)
+    private void Concentration(OscBundle data)
     {
+        double value = parseDoubleFromString(data.Messages[0].Arguments[0].ToString());
+
         Debug.Log(value);
         if (value > 1) ThinkingUp(100);
         if (value < 1) ThinkingDown(100);
